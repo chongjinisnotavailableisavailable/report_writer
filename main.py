@@ -1,0 +1,1 @@
+open_new_doc(create_folder(folder_name), file_name)

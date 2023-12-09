@@ -1,15 +1,7 @@
 import os
 from docx import Document
-from lxml import etree
 
-
-def open_new_doc(folder_name, file_name):
-    # Create the folder 'report' if it doesn't exist on the user's desktop
-    desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
-    report_folder = os.path.join(desktop_path, folder_name)
-
-    if not os.path.exists(report_folder):
-        os.makedirs(report_folder)
+def main(report_folder=os.getcwd(), file_name="test.docx"):
 
     # Create the Word document path inside the 'report' folder
     file_path = os.path.join(report_folder, file_name)
@@ -23,6 +15,6 @@ def open_new_doc(folder_name, file_name):
     for paragraph in doc.paragraphs:
         print(paragraph.text)
 
-# Set the folder name and file name for the Word document
-folder_name = 'report'
-file_name = 'example.docx'
+if __name__ == "__main__":
+    main()
+

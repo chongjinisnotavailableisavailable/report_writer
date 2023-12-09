@@ -1,4 +1,7 @@
+from create_folder import create_folder
+
 def main():
+    create_folder()
     open_new_doc()
     format_checker()
     format_select()
@@ -15,3 +18,4 @@ report_writer()
     format_report()
     
     
+main()
