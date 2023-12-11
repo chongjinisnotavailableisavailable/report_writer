@@ -1,8 +1,12 @@
 import os
+try:
+    from variable_test import folder_name, file_name
+except ModuleNotFoundError:
+    pass
 from docx import Document
 
-def main(report_folder=os.getcwd(), file_name="test.docx"):
-
+def open_new_doc(report_folder=os.getcwd()):
+    report_folder = os.path.join(os.path.expanduser('~'), 'Desktop', folder_name)
     # Create the Word document path inside the 'report' folder
     file_path = os.path.join(report_folder, file_name)
 
@@ -14,7 +18,4 @@ def main(report_folder=os.getcwd(), file_name="test.docx"):
     doc = Document(file_path)
     for paragraph in doc.paragraphs:
         print(paragraph.text)
-
-if __name__ == "__main__":
-    main()
 

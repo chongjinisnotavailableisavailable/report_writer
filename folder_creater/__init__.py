@@ -1,6 +1,10 @@
+try:
+    from variable_test import folder_name
+except ModuleNotFoundError:
+    pass
 import os
 
-def main(folder_name):
+def create_folder():
     # Create the folder 'report' if it doesn't exist on the user's desktop
     desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
     report_folder = os.path.join(desktop_path, folder_name)
@@ -8,5 +12,4 @@ def main(folder_name):
         os.makedirs(report_folder)
     return(report_folder)
 
-if __name__ == "__main__":
-    main(folder_name="test")
+print(f"created folder, {folder_name}")
