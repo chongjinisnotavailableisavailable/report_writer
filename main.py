@@ -10,7 +10,6 @@ def main():
     format_check() #looks at what format of the report (i.e. generic, detailed, etc) is required and imports the relevant modules
     
 """
-    format_required_checker & import()
     report_writer()
     save_and_close()
 

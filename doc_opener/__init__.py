@@ -18,4 +18,8 @@ def open_new_doc(report_folder=os.getcwd()):
     doc = Document(file_path)
     for paragraph in doc.paragraphs:
         print(paragraph.text)
+    
+    return file_path
 
+if __name__ == "__open_new_doc__":   
+    open_new_doc(folder_name)

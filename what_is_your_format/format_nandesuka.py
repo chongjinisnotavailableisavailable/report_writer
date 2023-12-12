@@ -10,5 +10,8 @@ def format_check():
 
     selected_format = _report_formats.get(reports_format)
 
-    return __import__(selected_format)
+    return selected_format
+
+if __name__ == "__format_check__":   
+    format_check()
     
