@@ -1,11 +1,15 @@
 import os
 from docx import Document
-from doc_opener import file_path
 from variable_test import reports_format
+from template_generator import merge_relevant
+
+relevant_contents = ["1_Introduction.docx", "2_Description.docx"]
 
 #find or open file with name output in doc_opener
-def report_writer():
-    open_file()
+def report_writer_main():
+    merge_relevant()
+    
+    """
     use_template()
     insert_headers()
     insert_tables()
@@ -14,19 +18,18 @@ def report_writer():
     insert_pictures
     insert_signor()
     format_report()
+    """
 
 
-
-def open_file(_file_path):
-    doc = Document(file_path)
+## def open_file():
+ ##   doc = Document(file_path)
 
     #iterates over each paragraph, and prints it out in console/env, to be executed in script
-    for paragraph in doc.paragraphs: 
-        print(paragraph.text)
+   ## for paragraph in doc.paragraphs: 
+   ##     print(paragraph.text)
 
-    open_file(file_path)
-
-def use_template():
+  ##  open_file(file_path)
+"""def use_template():
     #path to folder where all the templates are being held
     _path_to_template_folder = os.path.join((os.path.abspath(__file__)),"_templates")
 
@@ -42,9 +45,10 @@ def use_template():
     for template in source_doc.template:
         new_doc = target_doc.add_paragraph(template.text)
 
-    target_doc.save(file_path)
+    new_doc.save(file_path)
 
     source_doc.close()
+"""
 
 
 
@@ -56,4 +60,4 @@ def use_template():
 
 
 if __name__ == "__report_writer__":   
-    report_writer()
+    report_writer_main()
