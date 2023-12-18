@@ -1,13 +1,13 @@
 import os
 from docx import Document
 from variable_test import reports_format
-from template_generator import merge_relevant
+from template_generator import gen_template, template_finder
 
 relevant_contents = ["1_Introduction.docx", "2_Description.docx"]
 
 #find or open file with name output in doc_opener
-def report_writer_main():
-    merge_relevant()
+def report_writer_main(files_to_merge = template_finder(reports_format), folder_to_save_in = os.path.join(os.path.expanduser('~'), 'Desktop','report')):
+    gen_template(files_to_merge, folder_to_save_in)
     
     """
     use_template()
