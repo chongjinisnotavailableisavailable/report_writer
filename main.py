@@ -7,12 +7,9 @@ from report_writer import report_writer_main
 def main():
     create_folder() #ensures folder is there; default desktop/report; prompts path in future using kwargs?
     format_check() #looks at what format of the report (i.e. generic, detailed, etc) is required and imports the relevant modules ; is this even relevant anymore
-    report_writer_main()
+    report_writer_main() #writes the report
     
 """
-    report_writer()
-    save_and_close()
-
 report_writer()
     insert_headers()
     insert_tables()
