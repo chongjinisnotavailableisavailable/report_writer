@@ -9,10 +9,12 @@ list of common pages:
     disclaimers & citing & etc
 
 """
-from variable_test import reports_format
+from variable_test import file_name, records
 from docx import Document
 from docx.shared import Inches
 import os
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import RGBColor, Pt
 
 # a function to determine what kind of merging shall occur to generate a desired template
 def template_finder(required_format):
@@ -33,13 +35,12 @@ def template_finder(required_format):
         'generic': generic_template,
         'coporate': corporate_template,
         'simplified': simplified_template,
-        'detailed': detailed_template
-        
+        'detailed': detailed_template        
     }
+
     required = cases.get(required_format)
 
-    if required:
-        return required()
+    return required()
 
 # A function to bold the document   
 # when transplanting variables to merged doc, it should automatically revert it back to normal txt without bold
@@ -48,10 +49,11 @@ def bold(document):
                 for run in paragraph.runs:
                     run.bold=True
 
-#inserting objects like tables, logos, pictures
+#inserting objects like tables, logos, pictures in the header section
 def insert_objects(document):
     for section in document.sections:
         header = section.header
+
         # for the header portion in the generated template, with the paragraph method, add a run, to add in a picture called logo.jpeg      
         for paragraph in header.paragraphs:
             paragraph.add_run().add_picture('Logo.jpg')
@@ -59,19 +61,92 @@ def insert_objects(document):
 #adds in the TnC/whatever image add the end of the doc.
 def TnC(document):
      last_page = document.add_paragraph()
+
      #on the last page, add_run to insert an image
      #note: the current image size (not file memory size), by default takes up one whole page, and hence a page break is not needed
      run = last_page.add_run()
      image = 'TnC.jpg'
+
      # this portion forces the image to be of a certain size to take up 1 page, to eliminate the need for a page break
      width_inch = 6.27
      height_inch = 8.76
      run.add_picture(image, width = Inches(width_inch), height = Inches(height_inch))
+
+def insert_tables(document):
+
+    document.add_page_break()
+
+    # p is the title of the table  
+    p = document.add_heading('Evidence', level=2) #possibility to use add_heading to create other headers for better organisation
+    
+    #alignment cant add_run, add_run only works on text/paragraphs
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+    #treat the newly made header like a paragraph text, and edits it
+    # this portion makes it bold, sets colour to black, size to pt 16
+    for run in p.runs:
+        run.bold = True
+        run.font.size = Pt(16) # Adjust the font size as needed
+        run.font.color.rgb = RGBColor(0, 0, 0) # RGBColor(0, 0, 0) represents black
+
+    # adds a line break afterwards to make it look nice
+    p.add_run().add_break()
+
+    #creates a table of x,y size
+    table = document.add_table(rows=1, cols=4)
+
+    #centres the table to the middle of the page
+    table.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    
+    #with the header of the cells being called hdr_cells, access the table on the first row with index 0, give it a name with following
+    hdr_cells = table.rows[0].cells
+
+    #.text returns a text
+
+    header_texts = ['name', 'size', 'price', 'date']
+
+    #iterates the list to give headers
+
+    # on the first row called headers    
+    hdr_cells = table.rows[0].cells
+
+    for index, text in enumerate(header_texts):
+        # append left to right index 0 to 3 on header
+         hdr_cells[index].text = text
+
+        # bolds, underlines and centralise the header
+        # for the cells in the header, bold and underline them       
+         header = hdr_cells[index].paragraphs[0]
+         formatting = header.runs[0]
+         formatting.bold = True
+         formatting.underline = True
+
+         # runs or add_runs doesnt work with cells, alightment of this belongs to the cell's property
+         # I THINK
+         header.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+    #future if statement for conditional remark
+    if 'x':
+         pass
+         ...
+
+    for name, size, price, date in records:
+        #iterates over the list and for each list in the list, add a row
+        row_cells = table.add_row().cells
+
+        #this portion appends the cell left to right via indexing
+        # only accepts type 'str'
+        row_cells[0].text = name
+        row_cells[1].text = size
+        row_cells[2].text = price
+        row_cells[3].text = date
+
                  
 # a function to generate a template base on given input
 # default font Times New Roman
 def gen_template(files, output_folder = os.path.join(os.path.expanduser('~'), 'Desktop','report')):
     
+    output_name = file_name
     generated_template = Document()
 
     for file_path in files:
@@ -83,13 +158,17 @@ def gen_template(files, output_folder = os.path.join(os.path.expanduser('~'), 'D
             p = generated_template.add_paragraph()
             p.add_run(paragraph.text).font.name = 'Times New Roman'    
     
+    #this section does formatting & adds addtional things from the base template
     bold(generated_template)
 
     insert_objects(generated_template)
 
+    insert_tables(generated_template)
+
     TnC(generated_template)
 
-    output_file_path = os.path.join(output_folder, 'output__with_logo_and_TnC.docx')
+    #outputs to a path (default desktop/report) with file name (to be set to variable) in variable file
+    output_file_path = os.path.join(output_folder, output_name)
 
     generated_template.save(output_file_path)
 

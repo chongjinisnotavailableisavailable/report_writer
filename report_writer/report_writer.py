@@ -14,7 +14,7 @@ def report_writer_main(files_to_merge = template_finder(reports_format), folder_
     
     """
     insert_headers()
-    insert_tables()
+    insert_tables(); done
     insert_paragraphs()
     replace_keywords()
     insert_pictures
