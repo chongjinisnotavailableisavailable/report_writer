@@ -9,7 +9,7 @@ list of common pages:
     disclaimers & citing & etc
 
 """
-from variable_test import file_name, records
+from variable_test import file_name, records, variables_dict, client_name
 from docx import Document
 from docx.shared import Inches
 import os
@@ -141,6 +141,34 @@ def insert_tables(document):
         row_cells[2].text = price
         row_cells[3].text = date
 
+def insert_key_values(document):
+     for paragraph in document.paragraphs:
+        for run in paragraph.runs:
+             text = run.text
+             for key, value in variables_dict.items():
+                  text = text.replace(key, value)
+             run.text = text
+
+def get_headings_from_filename(file_name):
+     parts = file_name.split('_')
+     heading_number = parts[0]
+     heading_title = parts[1].replace('.docx','').title()
+     h = f"{heading_number}.          {heading_title}"
+   
+     return h
+
+def report_for_who(document):
+     p = document.add_paragraph(f'REPORT FOR:          {client_name.upper()}')
+     p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+     run = p.runs[0]
+
+     run.bold = True
+     run.font.size = Pt(11)
+     run.font.name = 'Times New Roman'
+
+     return p    
+        
                  
 # a function to generate a template base on given input
 # default font Times New Roman
@@ -149,23 +177,43 @@ def gen_template(files, output_folder = os.path.join(os.path.expanduser('~'), 'D
     output_name = file_name
     generated_template = Document()
 
+    report_for_who(generated_template)
+
     for file_path in files:
         doc = Document(file_path)
+
         font_styles = doc.styles.add_style(name = 'Times New Roman', style_type = 1)
         font = font_styles.font
         font.name = 'Times New Roman'
+        
+        template_file_name = os.path.basename(file_path)
+        heading_title = get_headings_from_filename(template_file_name)
+
+        h = generated_template.add_heading(heading_title, level = 1)
+        
+        font = h.runs[0].font
+        font.name = 'Times New Roman'
+        font.bold = True
+        font.size = Pt(11)
+        font.color.rgb = RGBColor(0, 0, 0)
+
+        h.add_run().add_break()
+
+
         for paragraph in doc.paragraphs:
             p = generated_template.add_paragraph()
             p.add_run(paragraph.text).font.name = 'Times New Roman'    
     
     #this section does formatting & adds addtional things from the base template
-    bold(generated_template)
+    #bold(generated_template)
 
     insert_objects(generated_template)
 
     insert_tables(generated_template)
 
     TnC(generated_template)
+
+    insert_key_values(generated_template)
 
     #outputs to a path (default desktop/report) with file name (to be set to variable) in variable file
     output_file_path = os.path.join(output_folder, output_name)
