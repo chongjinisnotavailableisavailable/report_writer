@@ -9,18 +9,19 @@ list of common pages:
     disclaimers & citing & etc
 
 """
-from variable_test import file_name, records, variables_dict, client_name
+from variable_test import file_name, records, variables_dict, client_name,folder_containing_images,generic
 from docx import Document
 from docx.shared import Inches
 import os
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import RGBColor, Pt
+from appendix import appendix_1
 
 # a function to determine what kind of merging shall occur to generate a desired template
 def template_finder(required_format):
     
     def generic_template():
-         required = ["1_Introduction.docx", "2_Description.docx"]
+         required = generic
          return required
     def corporate_template():
         ...
@@ -50,7 +51,7 @@ def bold(document):
                     run.bold=True
 
 #inserting objects like tables, logos, pictures in the header section
-def insert_objects(document):
+def insert_header(document):
     for section in document.sections:
         header = section.header
 
@@ -140,6 +141,7 @@ def insert_tables(document):
         row_cells[1].text = size
         row_cells[2].text = price
         row_cells[3].text = date
+    
 
 def insert_key_values(document):
      for paragraph in document.paragraphs:
@@ -167,19 +169,19 @@ def report_for_who(document):
      run.font.size = Pt(11)
      run.font.name = 'Times New Roman'
 
-     return p    
-        
+     return p
+
                  
 # a function to generate a template base on given input
 # default font Times New Roman
-def gen_template(files, output_folder = os.path.join(os.path.expanduser('~'), 'Desktop','report')):
+def gen_template(files_to_merge, output_folder = os.path.join(os.path.expanduser('~'), 'Desktop','report')):
     
     output_name = file_name
     generated_template = Document()
 
     report_for_who(generated_template)
 
-    for file_path in files:
+    for file_path in files_to_merge:
         doc = Document(file_path)
 
         font_styles = doc.styles.add_style(name = 'Times New Roman', style_type = 1)
@@ -199,21 +201,23 @@ def gen_template(files, output_folder = os.path.join(os.path.expanduser('~'), 'D
 
         h.add_run().add_break()
 
-
         for paragraph in doc.paragraphs:
             p = generated_template.add_paragraph()
-            p.add_run(paragraph.text).font.name = 'Times New Roman'    
+            p.add_run(paragraph.text).font.name = 'Times New Roman'
+            p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY    
     
     #this section does formatting & adds addtional things from the base template
-    #bold(generated_template)
+    #bold(generated_template)  
 
-    insert_objects(generated_template)
+    insert_header(generated_template)    
 
     insert_tables(generated_template)
 
-    TnC(generated_template)
-
     insert_key_values(generated_template)
+
+    appendix_1(generated_template,folder_containing_images)
+
+    TnC(generated_template)
 
     #outputs to a path (default desktop/report) with file name (to be set to variable) in variable file
     output_file_path = os.path.join(output_folder, output_name)

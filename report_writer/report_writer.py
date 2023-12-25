@@ -1,7 +1,6 @@
 import os
 from variable_test import reports_format
 from template_generator import gen_template, template_finder
-from object_insert import insert_objects
 
 #writes the report, default path folder is being ensured by create_folder() in main; 
 #to update and add in ability to change path
@@ -17,8 +16,8 @@ def report_writer_main(files_to_merge = template_finder(reports_format), folder_
     insert_tables(); done
     insert_paragraphs(); done
     replace_keywords(); done
-    insert_pictures
-    insert_signor()
+    insert_pictures; done
+    insert_conclusion block & signor()
     format_report()
     """
 
